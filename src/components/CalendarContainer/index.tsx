@@ -10,11 +10,12 @@ interface Event {
 }
 
 interface Props {
-    events: Event[]
+    events: Event[],
+    blockedDates: string[]
 }
 
 function CalendarContainer(props: Props) {
-    const { events } = props;
+    const { events, blockedDates } = props;
 
     // Constants
     const weekdayshort = moment.weekdaysShort();
@@ -81,6 +82,7 @@ function CalendarContainer(props: Props) {
         for (let d = 1; d <= dateObject.daysInMonth(); d++) {
             const dayFormated = dateObject.set('date', d).format('YYYY-MM-DD');
             let eventsThatDay: any = [];
+            const dayIsBlocked = blockedDates.find(i => i === dayFormated) ? true : false;
 
             events.map(event => {
                 if (eventsRanges[event.id].datesInRange.includes(dayFormated)) {
@@ -91,23 +93,40 @@ function CalendarContainer(props: Props) {
             const element = <td
                 onClick={() => handleClickDate(dayFormated)}
                 key={dayFormated} id={dayFormated}
-                className={classes.dayWrapper}
+                className={clsx(
+                    classes.dayWrapper,
+                    dayIsBlocked && classes.dayBlocked
+                )}
             >
-                <div className={classes.day}>
+                <div className={classes.eventStatus} />
+
+                <div className={classes.dayLabel}>
                     {d}
                 </div>
 
-                <div className={classes.eventsWrapper}>
+                {(eventsThatDay.length === 0 && !dayIsBlocked) && <div className={classes.dayPrice}>
+                    €1,290
+                </div>}
+
+                <div className={clsx(
+                    classes.eventsWrapper,
+                    eventsThatDay.length >= 2 && classes.eventsWrapperMulti,
+                )}>
                     {eventsThatDay.map((event: any) => <div
                         data-eventid={event.id}
                         className={clsx(
+                            'event-timeline',
                             classes.eventTimeline,
                             event.end === dayFormated && classes.eventEnd,
                             event.start === dayFormated && classes.eventStart,
                             eventsThatDay.length === 2 && classes.eventStartAndEventEnd
                         )}
                         onClick={(e) => handleClickEvent(e, event)}>
-                        {event.start === dayFormated && event.name}
+                        <div className="event-name">
+                            {(event.start === dayFormated || d === 1) && event.name}
+                        </div>
+
+                        {event.start === dayFormated && <span></span>}
                     </div>)}
                 </div>
             </td>
@@ -164,7 +183,7 @@ function CalendarContainer(props: Props) {
 
     return (
         <div className={classes.root} id="root">
-            <table className={classes.weekDays}>
+            <table className={classes.weekDaysWrapper}>
                 <thead>
                     <tr>
                         {weekdayshortname}
