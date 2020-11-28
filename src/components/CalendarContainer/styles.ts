@@ -56,6 +56,7 @@ export const useStyles = makeStyles({
       flex: 'none',
       position: 'relative',
       cursor: 'pointer',
+      userSelect: 'none',
 
       '&:hover': {
         backgroundColor: '#f1f4ff'
@@ -86,6 +87,15 @@ export const useStyles = makeStyles({
     right: 9,
     color: '#bebebe',
     fontSize: 17
+  },
+
+  daySelected: {
+    backgroundColor: '#f4e9ff',
+    borderColor: '#f4e9ff',
+
+    '&:hover': {
+      backgroundColor: '#f4e9ff'
+    }
   },
 
   eventsWrapper: {

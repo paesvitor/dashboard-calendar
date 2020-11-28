@@ -17,6 +17,9 @@ interface Props {
 function CalendarContainer(props: Props) {
     const { events, blockedDates } = props;
 
+    // Stats
+    const [selectedDays, setSelectedDays] = useState<string[]>([]);
+
     // Constants
     const weekdayshort = moment.weekdaysShort();
     const monthsInYear = moment.months();
@@ -31,6 +34,16 @@ function CalendarContainer(props: Props) {
             </th>
         );
     });
+
+    function handleSelectDay(day: string) {
+        const index = selectedDays.findIndex(i => i === day);
+        if (index === -1) {
+            setSelectedDays([...selectedDays, day])
+        } else {
+            setSelectedDays([...selectedDays.filter(i => i !== day)])
+        }
+
+    }
 
     function getDatesInRage(date1: string, date2: string) {
         let dates = [];
@@ -83,6 +96,7 @@ function CalendarContainer(props: Props) {
             const dayFormated = dateObject.set('date', d).format('YYYY-MM-DD');
             let eventsThatDay: any = [];
             const dayIsBlocked = blockedDates.find(i => i === dayFormated) ? true : false;
+            const dayIsSelected = selectedDays.find(i => i === dayFormated) ? true : false;
 
             events.map(event => {
                 if (eventsRanges[event.id].datesInRange.includes(dayFormated)) {
@@ -95,7 +109,8 @@ function CalendarContainer(props: Props) {
                 key={dayFormated} id={dayFormated}
                 className={clsx(
                     classes.dayWrapper,
-                    dayIsBlocked && classes.dayBlocked
+                    dayIsBlocked && classes.dayBlocked,
+                    dayIsSelected && classes.daySelected
                 )}
             >
                 <div className={classes.eventStatus} />
@@ -173,6 +188,7 @@ function CalendarContainer(props: Props) {
 
     function handleClickDate(date: any) {
         console.log('Clicked on date - ', date)
+        handleSelectDay(date)
     }
 
     function handleClickEvent(event: React.MouseEvent, date: any) {
