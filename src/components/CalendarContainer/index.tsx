@@ -81,46 +81,32 @@ function CalendarContainer(props: Props) {
         let arr = [];
 
         for (let d = 1; d <= dateObject.daysInMonth(); d++) {
-            let dayHasEventStart = false;
-            let dayHasEventEnd = false;
-            let eventEndDate = '';
             const dayFormated = dateObject.set('date', d).format('YYYY-MM-DD');
-            let dayHasFinishAndStartDate = datesThatHasEvents.map((i: any) => i === dayFormated).filter(i => i).length === 2;;
             let eventsThatDay: any = [];
 
             events.map(event => {
                 if (eventsRanges[event.id].datesInRange.includes(dayFormated)) {
                     eventsThatDay.push(event)
                 }
-
-                if (event.start === dayFormated) {
-                    dayHasEventStart = true;
-                    eventEndDate = event.end;
-                } else if (event.end === dayFormated) {
-                    dayHasEventEnd = true
-                }
             });
 
             const element = <td
                 onClick={() => handleClickDate(dayFormated)}
-                data-is-startdate={dayHasEventStart}
-                data-is-enddate={dayHasEventEnd}
                 key={dayFormated} id={dayFormated}
-                className={clsx(classes.dayWrapper, dayHasEventStart && classes.dayHasEventStart, dayHasEventEnd && classes.dayHasEventEnd)}
+                className={classes.dayWrapper}
             >
-                <div className={classes.day} >
+                <div className={classes.day}>
                     {d}
                 </div>
 
                 <div className={classes.eventsWrapper}>
                     {eventsThatDay.map((event: any) => <div
                         data-eventid={event.id}
-                        data-eventend={eventEndDate}
                         className={clsx(
                             classes.eventTimeline,
-                            dayHasEventEnd && classes.eventEnd,
-                            dayHasEventStart && classes.eventStart,
-                            dayHasFinishAndStartDate && classes.eventStartAndEventEnd
+                            event.end === dayFormated && classes.eventEnd,
+                            event.start === dayFormated && classes.eventStart,
+                            eventsThatDay.length === 2 && classes.eventStartAndEventEnd
                         )}
                         onClick={(e) => handleClickEvent(e, event)}>
 
