@@ -74,26 +74,27 @@ export const useStyles = makeStyles({
     cursor: 'pointer',
     borderRadius: 3,
     zIndex: 3,
-    width: '100%',
-    minHeight: 10,
-    marginTop: 15
+    minWidth: '100%',
+    height: 20,
+    marginTop: 15,
+    whiteSpace: 'nowrap'
   },
 
   eventStartAndEventEnd: {
     position: 'relative',
     width: '32%',
-    left: 'unset !important'
+    left: 'unset !important',
+    minWidth: 'unset'
   },
 
   eventStart: {
-    left: '50%'
+    left: '50%',
+    zIndex: 4
   },
 
   eventEnd: {
     left: '-50%'
   },
-
-
 
   dayHasEventStart: {
     // backgroundColor: 'red'

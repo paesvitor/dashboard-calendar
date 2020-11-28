@@ -75,8 +75,6 @@ function CalendarContainer(props: Props) {
 
     function fillDaysInMonth(month: number) {
         const dateObject = moment().set('month', month).set('year', 2020);
-        const tempDatesThatHasEvents = Object.keys(eventsRanges).map(key => [...eventsRanges[key].datesInRange]);
-        const datesThatHasEvents = tempDatesThatHasEvents.concat.apply([], tempDatesThatHasEvents);
 
         let arr = [];
 
@@ -109,7 +107,7 @@ function CalendarContainer(props: Props) {
                             eventsThatDay.length === 2 && classes.eventStartAndEventEnd
                         )}
                         onClick={(e) => handleClickEvent(e, event)}>
-
+                        {event.start === dayFormated && event.name}
                     </div>)}
                 </div>
             </td>
