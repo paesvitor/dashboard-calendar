@@ -47,6 +47,7 @@ export const useStyles = makeStyles({
       flex: 'none',
       position: 'relative',
       cursor: 'pointer',
+      overflow: 'hidden',
 
       '&:hover': {
         backgroundColor: 'mistyrose'
@@ -59,6 +60,12 @@ export const useStyles = makeStyles({
     right: 3
   },
 
+  eventsWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+
   eventTimeline: {
     position: 'absolute',
     left: 0,
@@ -66,15 +73,32 @@ export const useStyles = makeStyles({
     padding: 5,
     cursor: 'pointer',
     borderRadius: 3,
-    zIndex: 3
+    zIndex: 3,
+    width: '100%'
   },
 
+  eventStartAndEventEnd: {
+    position: 'relative',
+    width: '30%',
+    left: 'unset !important'
+  },
+
+  eventStart: {
+    left: '50%'
+  },
+
+  eventEnd: {
+    left: '-50%'
+  },
+
+
+
   dayHasEventStart: {
-    backgroundColor: 'red'
+    // backgroundColor: 'red'
   },
 
   dayHasEventEnd: {
-    backgroundColor: 'blue'
+    // backgroundColor: 'blue'
   },
 
   emptyDay: {

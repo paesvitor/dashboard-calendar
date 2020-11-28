@@ -1,23 +1,20 @@
 import moment from 'moment'
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useStyles } from './styles';
 import clsx from 'clsx';
 
-const events = [
-    {
-        start: '2020-03-20',
-        end: '2020-04-03',
-        id: 389
-    },
+interface Event {
+    start: string;
+    end: string;
+    id: number;
+}
 
-    {
-        start: '2020-01-31',
-        end: '2020-02-06',
-        id: 1
-    }
-]
+interface Props {
+    events: Event[]
+}
 
-function CalendarContainer() {
+function CalendarContainer(props: Props) {
+    const { events } = props;
     //State
     // const [dateObject, setDateObject] = useState<Moment>(moment().set('month', 3));
     // const [blankElements, setBlankElements] = useState<(Element | JSX.Element)[]>([])
@@ -44,6 +41,50 @@ function CalendarContainer() {
         );
     });
 
+    function getDatesInRage(date1: string, date2: string) {
+        let dates = [];
+        let startDate = moment(date1, 'YYYY-MM-DD');
+        let finishDate = moment(date2, 'YYYY-MM-DD');
+        dates.push(startDate.format('YYYY-MM-DD'));
+
+        while (!startDate.isSame(finishDate)) {
+            startDate = startDate.add(1, 'days');
+            dates.push(startDate.format('YYYY-MM-DD'));
+        }
+
+        return dates;
+    }
+
+    const eventsRanges: any = useMemo(() => {
+        const obj: any = {};
+
+        // eslint-disable-next-line array-callback-return
+        events.map(event => {
+            obj[event.id] = {
+                datesInRange: getDatesInRage(event.start, event.end)
+            }
+        });
+
+        return obj;
+    }, [events]);
+
+    const eventsRanges2: any = useMemo(() => {
+        const obj: any = {};
+
+        // eslint-disable-next-line array-callback-return
+        events.map(event => {
+            const day = {
+
+            }
+
+            obj[event.id] = {
+                datesInRange: getDatesInRage(event.start, event.end)
+            }
+        });
+
+        return obj;
+    }, [events])
+
     function firstDayOfMonth(month: number): number {
         const dateObject = moment().set('month', month);
         return Number(moment(dateObject).startOf('month').format('d'));
@@ -61,6 +102,8 @@ function CalendarContainer() {
 
     function fillDaysInMonth(month: number) {
         const dateObject = moment().set('month', month).set('year', 2020);
+        const tempDatesThatHasEvents = Object.keys(eventsRanges).map(key => [...eventsRanges[key].datesInRange]);
+        const datesThatHasEvents = tempDatesThatHasEvents.concat.apply([], tempDatesThatHasEvents);
 
         let arr = [];
 
@@ -68,14 +111,18 @@ function CalendarContainer() {
             let dayHasEventStart = false;
             let dayHasEventEnd = false;
             let eventEndDate = '';
-            let tempEvent: any = null;
             const dayFormated = dateObject.set('date', d).format('YYYY-MM-DD');
+            let dayHasFinishAndStartDate = datesThatHasEvents.map((i: any) => i === dayFormated).filter(i => i).length === 2;;
+            let eventsThatDay: any = [];
 
             events.map(event => {
+                if (eventsRanges[event.id].datesInRange.includes(dayFormated)) {
+                    eventsThatDay.push(event)
+                }
+
                 if (event.start === dayFormated) {
                     dayHasEventStart = true;
                     eventEndDate = event.end;
-                    tempEvent = event;
                 } else if (event.end === dayFormated) {
                     dayHasEventEnd = true
                 }
@@ -92,14 +139,20 @@ function CalendarContainer() {
                     {d}
                 </div>
 
-                {dayHasEventStart &&
-                    <div
-                        data-eventid={tempEvent.id}
+                <div className={classes.eventsWrapper}>
+                    {eventsThatDay.map((event: any) => <div
+                        data-eventid={event.id}
                         data-eventend={eventEndDate}
-                        className={classes.eventTimeline}
-                        onClick={(e) => handleClickEvent(e, tempEvent)}>
-                        Booking
-                </div>}
+                        className={clsx(
+                            classes.eventTimeline,
+                            dayHasEventEnd && classes.eventEnd,
+                            dayHasEventStart && classes.eventStart,
+                            dayHasFinishAndStartDate && classes.eventStartAndEventEnd
+                        )}
+                        onClick={(e) => handleClickEvent(e, event)}>
+
+                    </div>)}
+                </div>
             </td>
             arr.push(element);
         }
