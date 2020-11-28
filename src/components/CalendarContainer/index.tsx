@@ -15,12 +15,6 @@ interface Props {
 
 function CalendarContainer(props: Props) {
     const { events } = props;
-    //State
-    // const [dateObject, setDateObject] = useState<Moment>(moment().set('month', 3));
-    // const [blankElements, setBlankElements] = useState<(Element | JSX.Element)[]>([])
-    // const [daysInMonthElements, setDaysInMonthElements] = useState<(Element | JSX.Element)[]>([]);
-    // const [totalSlots, setTotalSlots] = useState<(Element | JSX.Element)[]>([]);
-    const [calendarWidth, setCalendarWidth] = useState(0);
 
     // Constants
     const weekdayshort = moment.weekdaysShort();
@@ -28,10 +22,6 @@ function CalendarContainer(props: Props) {
 
     // Classes
     const classes = useStyles()
-
-    // console.log(monthsInYear)
-    // let rows: any = [];
-    // let cells: any = [];
 
     const weekdayshortname = weekdayshort.map(day => {
         return (
@@ -67,23 +57,6 @@ function CalendarContainer(props: Props) {
 
         return obj;
     }, [events]);
-
-    const eventsRanges2: any = useMemo(() => {
-        const obj: any = {};
-
-        // eslint-disable-next-line array-callback-return
-        events.map(event => {
-            const day = {
-
-            }
-
-            obj[event.id] = {
-                datesInRange: getDatesInRage(event.start, event.end)
-            }
-        });
-
-        return obj;
-    }, [events])
 
     function firstDayOfMonth(month: number): number {
         const dateObject = moment().set('month', month);
@@ -181,10 +154,6 @@ function CalendarContainer(props: Props) {
         return rows
     }
 
-    // function paintRows() {
-    //     getRows().map(row => console.log(row))
-    // }
-
     function renderDaysInMonth(month: number) {
         return getRows(month).map((row: (Element | JSX.Element)[], i: any) => {
             if (month === 2) {
@@ -199,13 +168,6 @@ function CalendarContainer(props: Props) {
         });
     }
 
-    function calculateCalendarWidth() {
-        const rootElement = document.getElementById('root');
-        if (rootElement) {
-            setCalendarWidth(rootElement?.offsetWidth)
-        }
-    }
-
     function handleClickDate(date: any) {
         console.log('Clicked on date - ', date)
     }
@@ -215,18 +177,6 @@ function CalendarContainer(props: Props) {
         event.stopPropagation();
         console.log(date)
     }
-
-    // useEffect(() => {
-    //     console.log('Clicked on date', calendarWidth)
-    // }, [calendarWidth])
-
-    // useEffect(() => {
-    //     setTotalSlots([...blankElements, ...daysInMonthElements])
-    // }, [blankElements, daysInMonthElements]);
-
-    // useEffect(() => {
-    //     fillRowsAndCells()
-    // }, [totalSlots])
 
     return (
         <div className={classes.root} id="root">

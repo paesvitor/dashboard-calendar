@@ -12,7 +12,7 @@ export const useStyles = makeStyles({
     left: 0,
     backgroundColor: 'lightgray',
     borderBottom: '1px solid',
-    zIndex: 2
+    zIndex: 5
   },
 
   weekDay: {
@@ -32,7 +32,8 @@ export const useStyles = makeStyles({
 
   month: {
     width: '100%',
-    marginBottom: 30
+    marginBottom: 30,
+    overflow: 'hidden'
   },
 
   monthName: {
@@ -47,7 +48,6 @@ export const useStyles = makeStyles({
       flex: 'none',
       position: 'relative',
       cursor: 'pointer',
-      overflow: 'hidden',
 
       '&:hover': {
         backgroundColor: 'mistyrose'
@@ -74,12 +74,14 @@ export const useStyles = makeStyles({
     cursor: 'pointer',
     borderRadius: 3,
     zIndex: 3,
-    width: '100%'
+    width: '100%',
+    minHeight: 10,
+    marginTop: 15
   },
 
   eventStartAndEventEnd: {
     position: 'relative',
-    width: '30%',
+    width: '32%',
     left: 'unset !important'
   },
 
