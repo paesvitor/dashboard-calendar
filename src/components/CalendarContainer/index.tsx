@@ -2,20 +2,15 @@ import moment from 'moment'
 import React, { useMemo, useState } from 'react';
 import { useStyles } from './styles';
 import clsx from 'clsx';
-
-interface Event {
-    start: string;
-    end: string;
-    id: number;
-}
-
+import { Booking, CalendarConfig, Day, DayStatus } from '../../utils/Event';
 interface Props {
-    events: Event[],
-    blockedDates: string[]
+    bookings: Booking[],
+    days: Day[],
+    config: CalendarConfig
 }
 
 function CalendarContainer(props: Props) {
-    const { events, blockedDates } = props;
+    const { bookings, days, config } = props;
 
     // Stats
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
@@ -63,14 +58,14 @@ function CalendarContainer(props: Props) {
         const obj: any = {};
 
         // eslint-disable-next-line array-callback-return
-        events.map(event => {
-            obj[event.id] = {
-                datesInRange: getDatesInRage(event.start, event.end)
+        bookings.map(booking => {
+            obj[booking.id] = {
+                datesInRange: getDatesInRage(booking.start, booking.end)
             }
         });
 
         return obj;
-    }, [events]);
+    }, [bookings]);
 
     function firstDayOfMonth(month: number): number {
         const dateObject = moment().set('month', month);
@@ -87,6 +82,10 @@ function CalendarContainer(props: Props) {
         return arr;
     }
 
+    function renderDayStatus(status: DayStatus) {
+
+    }
+
     function fillDaysInMonth(month: number) {
         const dateObject = moment().set('month', month).set('year', 2020);
 
@@ -94,13 +93,13 @@ function CalendarContainer(props: Props) {
 
         for (let d = 1; d <= dateObject.daysInMonth(); d++) {
             const dayFormated = dateObject.set('date', d).format('YYYY-MM-DD');
-            let eventsThatDay: any = [];
-            const dayIsBlocked = blockedDates.find(i => i === dayFormated) ? true : false;
+            let bookingsThatDay: Booking[] = [];
             const dayIsSelected = selectedDays.find(i => i === dayFormated) ? true : false;
+            const day = days.find(day => day.date === dayFormated)
 
-            events.map(event => {
-                if (eventsRanges[event.id].datesInRange.includes(dayFormated)) {
-                    eventsThatDay.push(event)
+            bookings.map(booking => {
+                if (eventsRanges[booking.id].datesInRange.includes(dayFormated)) {
+                    bookingsThatDay.push(booking)
                 }
             });
 
@@ -109,7 +108,7 @@ function CalendarContainer(props: Props) {
                 key={dayFormated} id={dayFormated}
                 className={clsx(
                     classes.dayWrapper,
-                    dayIsBlocked && classes.dayBlocked,
+                    day?.status === 'UNAVAILABLE' && classes.dayBlocked,
                     dayIsSelected && classes.daySelected
                 )}
             >
@@ -119,29 +118,29 @@ function CalendarContainer(props: Props) {
                     {d}
                 </div>
 
-                {(eventsThatDay.length === 0 && !dayIsBlocked) && <div className={classes.dayPrice}>
-                    €1,290
+                {(bookingsThatDay.length === 0) && <div className={classes.dayPrice}>
+                    {config.defaultPrice.value}
                 </div>}
 
                 <div className={clsx(
                     classes.eventsWrapper,
-                    eventsThatDay.length >= 2 && classes.eventsWrapperMulti,
+                    bookingsThatDay.length >= 2 && classes.eventsWrapperMulti,
                 )}>
-                    {eventsThatDay.map((event: any) => <div
-                        data-eventid={event.id}
+                    {bookingsThatDay.map((booking: Booking) => <div
+                        data-eventid={booking.id}
                         className={clsx(
                             'event-timeline',
                             classes.eventTimeline,
-                            event.end === dayFormated && classes.eventEnd,
-                            event.start === dayFormated && classes.eventStart,
-                            eventsThatDay.length === 2 && classes.eventStartAndEventEnd
+                            booking.end === dayFormated && classes.eventEnd,
+                            booking.start === dayFormated && classes.eventStart,
+                            bookingsThatDay.length === 2 && classes.eventStartAndEventEnd
                         )}
-                        onClick={(e) => handleClickEvent(e, event)}>
+                        onClick={(e) => handleClickEvent(e, booking)}>
                         <div className="event-name">
-                            {(event.start === dayFormated || d === 1) && event.name}
+                            {(booking.start === dayFormated || d === 1) && booking.guest.name}
                         </div>
 
-                        {event.start === dayFormated && <span></span>}
+                        {booking.start === dayFormated && <span></span>}
                     </div>)}
                 </div>
             </td>

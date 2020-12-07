@@ -1,54 +1,74 @@
 import React from 'react';
 import CalendarContainer from './components/CalendarContainer';
+import { Booking, CalendarConfig, Day } from './utils/Event';
 
 
 function App() {
-  const events = [
+
+  const bookings: Booking[] = [
     {
-      name: 'booking 123456789012345',
-      start: '2020-01-28',
-      end: '2020-01-31',
-      id: 1
-    },
-    {
-      name: 'booking nameeeeeeeeeeeeeee',
-      start: '2020-01-31',
-      end: '2020-02-02',
-      id: 2
+      start: '2020-01-25',
+      end: '2020-02-03',
+      guest: {
+        name: 'Vitor Paes',
+      },
+      guests: 20,
+      id: 1,
+      property: {
+        id: 2,
+        minStay: 2
+      },
+      status: 'CONFIRMED',
+      value: 2000,
     },
 
     {
-      name: 'booking nameeeeeeeeeeeeeee',
-      start: '2020-02-02',
-      end: '2020-02-16',
-      id: 3
-    },
-
-    {
-      name: 'booking nameeeeeeeeeeeeeee',
-      start: '2020-07-14',
-      end: '2020-07-28',
-      id: 4
-    },
-
-    {
-      name: 'booking nameeeeeeeeeeeeeee',
-      start: '2020-08-02',
-      end: '2020-08-16',
-      id: 5
+      start: '2020-02-07',
+      end: '2020-02-28',
+      guest: {
+        name: 'Vitor Paes',
+      },
+      guests: 20,
+      id: 2,
+      property: {
+        id: 2,
+        minStay: 2
+      },
+      status: 'CONFIRMED',
+      value: 2000,
     }
   ];
 
-  const blockedDates = [
-    '2020-01-01',
-    '2020-01-02',
-    '2020-02-17',
-    '2020-02-18',
-    '2020-02-19',
-    '2020-02-20',
+  const days: Day[] = [
+    {
+      date: '2020-01-24',
+      status: 'UNAVAILABLE',
+    },
+    {
+      date: '2020-01-23',
+      price: 1000,
+      note: 'NOTE',
+      status: 'UPON_REQUEST'
+    }
   ]
 
-  return <CalendarContainer blockedDates={blockedDates} events={events} />
+  const calendarConfig: CalendarConfig = {
+    defaultPrice: {
+      currency: 'EUR',
+      value: 2000
+    },
+    defaultStatus: 'INSTANT',
+    property: {
+      id: 1,
+      name: 'Property name'
+    }
+  }
+
+  return <CalendarContainer
+    config={calendarConfig}
+    days={days}
+    bookings={bookings}
+  />
 }
 
 
