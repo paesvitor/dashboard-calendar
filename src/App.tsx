@@ -8,7 +8,7 @@ function App() {
   const bookings: Booking[] = [
     {
       start: '2020-01-25',
-      end: '2020-02-03',
+      end: '2020-01-31',
       guest: {
         name: 'Vitor Paes',
       },
@@ -20,10 +20,14 @@ function App() {
       },
       status: 'CONFIRMED',
       value: 2000,
+      changeover: {
+        before: 1,
+        after: 1
+      }
     },
 
     {
-      start: '2020-02-07',
+      start: '2020-02-06',
       end: '2020-02-28',
       guest: {
         name: 'Vitor Paes',
@@ -36,6 +40,10 @@ function App() {
       },
       status: 'CONFIRMED',
       value: 2000,
+      changeover: {
+        before: 0,
+        after: 0
+      }
     }
   ];
 

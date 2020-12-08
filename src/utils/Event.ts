@@ -17,7 +17,7 @@ export interface Booking {
     end: string,
     guests: number,
     value: number,
-    changeover?: {
+    changeover: {
         before: number,
         after: number
     }

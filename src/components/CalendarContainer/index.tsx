@@ -1,5 +1,5 @@
-import moment from 'moment'
-import React, { useMemo, useState } from 'react';
+import moment, { Moment } from 'moment'
+import React, { useEffect, useMemo, useState } from 'react';
 import { useStyles } from './styles';
 import clsx from 'clsx';
 import { Booking, CalendarConfig, Day, DayStatus } from '../../utils/Event';
@@ -14,13 +14,18 @@ function CalendarContainer(props: Props) {
 
     // Stats
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
+    const [selectedRangeStart, setSelectedRangeStart] = useState<Moment>();
 
     // Constants
     const weekdayshort = moment.weekdaysShort();
     const monthsInYear = moment.months();
 
     // Classes
-    const classes = useStyles()
+    const classes = useStyles();
+
+    // useEffect(() => {
+    //     getDaysInSelectionRange();
+    // }, [selectedRange]);
 
     const weekdayshortname = weekdayshort.map(day => {
         return (
@@ -30,14 +35,28 @@ function CalendarContainer(props: Props) {
         );
     });
 
-    function handleSelectDay(day: string) {
-        const index = selectedDays.findIndex(i => i === day);
-        if (index === -1) {
-            setSelectedDays([...selectedDays, day])
-        } else {
-            setSelectedDays([...selectedDays.filter(i => i !== day)])
+    function getDatesInRange(fromDate: Moment, toDate: Moment) {
+        const now = fromDate.clone(), dates = [];
+
+        while (now.isSameOrBefore(toDate)) {
+            dates.push(now.format('YYYY-MM-DD'));
+            now.add(1, 'days');
+        }
+        return dates;
+    }
+
+    function handleSelectDay(day: Moment) {
+        if (selectedRangeStart?.isAfter(day) || !selectedRangeStart) {
+            setSelectedRangeStart(day);
+            setSelectedDays([day.format('YYYY-MM-DD')]);
         }
 
+        if (selectedRangeStart?.isBefore(day)) {
+            setSelectedDays(getDatesInRange(selectedRangeStart, day));
+            setSelectedRangeStart(undefined);
+        }
+
+        // setSelectedRangeStart(day);
     }
 
     function getDatesInRage(date1: string, date2: string) {
@@ -95,11 +114,12 @@ function CalendarContainer(props: Props) {
             const dayFormated = dateObject.set('date', d).format('YYYY-MM-DD');
             let bookingsThatDay: Booking[] = [];
             const dayIsSelected = selectedDays.find(i => i === dayFormated) ? true : false;
-            const day = days.find(day => day.date === dayFormated)
+            const day = days.find(day => day.date === dayFormated);
+
 
             bookings.map(booking => {
                 if (eventsRanges[booking.id].datesInRange.includes(dayFormated)) {
-                    bookingsThatDay.push(booking)
+                    bookingsThatDay.push(booking);
                 }
             });
 
@@ -126,22 +146,29 @@ function CalendarContainer(props: Props) {
                     classes.eventsWrapper,
                     bookingsThatDay.length >= 2 && classes.eventsWrapperMulti,
                 )}>
-                    {bookingsThatDay.map((booking: Booking) => <div
-                        data-eventid={booking.id}
-                        className={clsx(
-                            'event-timeline',
-                            classes.eventTimeline,
-                            booking.end === dayFormated && classes.eventEnd,
-                            booking.start === dayFormated && classes.eventStart,
-                            bookingsThatDay.length === 2 && classes.eventStartAndEventEnd
-                        )}
-                        onClick={(e) => handleClickEvent(e, booking)}>
-                        <div className="event-name">
-                            {(booking.start === dayFormated || d === 1) && booking.guest.name}
-                        </div>
+                    {bookingsThatDay.map((booking: Booking) => {
+                        const bookingStart = moment(booking.start);
+                        const bookingEnd = moment(booking.end);
+                        const bookingDaysCount = bookingEnd.diff(bookingStart, 'days') + 1;
+                        const isChangeoverDay = d <= booking.changeover.before;
 
-                        {booking.start === dayFormated && <span></span>}
-                    </div>)}
+                        return <div
+                            data-eventid={booking.id}
+                            className={clsx(
+                                'event-timeline',
+                                classes.eventTimeline,
+                                booking.end === dayFormated && classes.eventEnd,
+                                booking.start === dayFormated && classes.eventStart,
+                                bookingsThatDay.length === 2 && classes.eventStartAndEventEnd
+                            )}
+                            onClick={(e) => handleClickEvent(e, booking)}>
+                            <div className="event-name">
+                                {(booking.start === dayFormated || d === 1) && booking.guest.name}
+                            </div>
+
+                            {booking.start === dayFormated && <span></span>}
+                        </div>
+                    })}
                 </div>
             </td>
             arr.push(element);
@@ -185,9 +212,9 @@ function CalendarContainer(props: Props) {
         });
     }
 
-    function handleClickDate(date: any) {
+    function handleClickDate(date: string) {
         console.log('Clicked on date - ', date)
-        handleSelectDay(date)
+        handleSelectDay(moment(date));
     }
 
     function handleClickEvent(event: React.MouseEvent, date: any) {
