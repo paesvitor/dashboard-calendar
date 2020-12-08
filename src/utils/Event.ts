@@ -43,4 +43,6 @@ export interface CalendarConfig {
     }
 
     defaultStatus: DayStatus;
+    viewStatus?: boolean;
+    viewRestrictions?: boolean;
 }

@@ -156,7 +156,10 @@ function CalendarContainer(props: Props) {
                     dayIsSelected && classes.daySelected
                 )}
             >
-                <div className={classes.dayStatus} style={{ backgroundColor: getDayStatusColor(day?.status || config.defaultStatus) }} />
+                {config.viewStatus && <div
+                    className={classes.dayStatus}
+                    style={{ backgroundColor: getDayStatusColor(day?.status || config.defaultStatus) }}
+                />}
 
                 <div className={classes.dayLabel}>
                     {d}
@@ -170,7 +173,7 @@ function CalendarContainer(props: Props) {
                     </ReactTooltip>
                 </span>}
 
-                {day?.restriction && <span>
+                {(day?.restriction && config.viewRestrictions) && <span>
                     <div className={classes.dayRestriction} data-tip data-for="dayRestriction" />
 
                     <ReactTooltip id="dayRestriction" effect="solid">

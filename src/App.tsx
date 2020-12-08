@@ -97,7 +97,9 @@ function App() {
     property: {
       id: 1,
       name: 'Property name'
-    }
+    },
+    viewStatus: true,
+    viewRestrictions: true
   }
 
   function handleClickBooking(booking: Booking) {
