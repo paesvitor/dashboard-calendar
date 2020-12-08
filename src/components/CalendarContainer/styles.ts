@@ -93,8 +93,8 @@ export const useStyles = makeStyles({
   },
 
   dayNote: {
-    width: 9,
-    height: 9,
+    width: 12,
+    height: 12,
     borderRadius: '50%',
     backgroundColor: '#b6b6b6',
     margin: '0 auto'

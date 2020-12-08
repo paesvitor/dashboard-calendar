@@ -4,7 +4,6 @@ import { Booking, CalendarConfig, Day } from './utils/Event';
 
 
 function App() {
-
   const bookings: Booking[] = [
     {
       start: '2020-01-25',
@@ -82,10 +81,20 @@ function App() {
     }
   }
 
+  function handleClickBooking(booking: Booking) {
+    console.log(booking);
+  }
+
+  function handleSelectedDatesChange(dates: string[]) {
+    console.log(dates);
+  }
+
   return <CalendarContainer
     config={calendarConfig}
     days={days}
     bookings={bookings}
+    onClickBooking={handleClickBooking}
+    onSelectedDatesChange={handleSelectedDatesChange}
   />
 }
 

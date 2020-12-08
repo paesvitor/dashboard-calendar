@@ -3,14 +3,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useStyles } from './styles';
 import clsx from 'clsx';
 import { Booking, CalendarConfig, Day, DayStatus } from '../../utils/Event';
+import ReactTooltip from 'react-tooltip';
 interface Props {
     bookings: Booking[],
     days: Day[],
-    config: CalendarConfig
+    config: CalendarConfig;
+    onSelectedDatesChange?: (dates: string[]) => void;
+    onClickBooking?: (booking: Booking) => void;
 }
 
 function CalendarContainer(props: Props) {
-    const { bookings, days, config } = props;
+    const { bookings, days, config, onClickBooking, onSelectedDatesChange } = props;
 
     // Stats
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
@@ -23,9 +26,11 @@ function CalendarContainer(props: Props) {
     // Classes
     const classes = useStyles();
 
-    // useEffect(() => {
-    //     getDaysInSelectionRange();
-    // }, [selectedRange]);
+    useEffect(() => {
+        if (onSelectedDatesChange && selectedDays.length > 1) {
+            onSelectedDatesChange(selectedDays);
+        }
+    }, [selectedDays, onSelectedDatesChange]);
 
     const weekdayshortname = weekdayshort.map(day => {
         return (
@@ -152,9 +157,21 @@ function CalendarContainer(props: Props) {
                     {d}
                 </div>
 
-                {day?.note && <div className={classes.dayNote} />}
+                {day?.note && <span>
+                    <div className={classes.dayNote} data-tip data-for="dayNote" />
 
-                {day?.restriction && <div className={classes.dayRestriction} />}
+                    <ReactTooltip id="dayNote" effect="solid">
+                        {day.note}
+                    </ReactTooltip>
+                </span>}
+
+                {day?.restriction && <span>
+                    <div className={classes.dayRestriction} data-tip data-for="dayRestriction" />
+
+                    <ReactTooltip id="dayRestriction" effect="solid">
+                        {day.restriction}
+                    </ReactTooltip>
+                </span>}
 
                 {(bookingsThatDay.length === 0) && <div className={classes.dayPrice}>
                     {config.defaultPrice.value}
@@ -171,22 +188,30 @@ function CalendarContainer(props: Props) {
                         const bookingDaysCount = bookingEnd.diff(bookingStart, 'days') + 1;
                         const isChangeoverDay = d <= booking.changeover.before;
 
-                        return <div
-                            data-eventid={booking.id}
-                            className={clsx(
-                                'event-timeline',
-                                classes.eventTimeline,
-                                booking.end === dayFormated && classes.eventEnd,
-                                booking.start === dayFormated && classes.eventStart,
-                                bookingsThatDay.length === 2 && classes.eventStartAndEventEnd
-                            )}
-                            onClick={(e) => handleClickEvent(e, booking)}>
-                            <div className="event-name">
-                                {(booking.start === dayFormated || d === 1) && booking.guest.name}
-                            </div>
+                        return <>
+                            <ReactTooltip id="bookingPopup" effect="solid">
+                                {booking.guest.name}
+                            </ReactTooltip>
 
-                            {booking.start === dayFormated && <span></span>}
-                        </div>
+                            <div
+                                data-tip
+                                data-for="bookingPopup"
+                                data-eventid={booking.id}
+                                className={clsx(
+                                    'event-timeline',
+                                    classes.eventTimeline,
+                                    booking.end === dayFormated && classes.eventEnd,
+                                    booking.start === dayFormated && classes.eventStart,
+                                    bookingsThatDay.length === 2 && classes.eventStartAndEventEnd
+                                )}
+                                onClick={(e) => handleClickBooking(e, booking)}>
+                                <div className="event-name">
+                                    {(booking.start === dayFormated || d === 1) && booking.guest.name}
+                                </div>
+
+                                {booking.start === dayFormated && <span></span>}
+                            </div>
+                        </>
                     })}
                 </div>
             </td>
@@ -232,14 +257,15 @@ function CalendarContainer(props: Props) {
     }
 
     function handleClickDate(date: string) {
-        console.log('Clicked on date - ', date)
         handleSelectDay(moment(date));
     }
 
-    function handleClickEvent(event: React.MouseEvent, date: any) {
+    function handleClickBooking(event: React.MouseEvent, booking: Booking) {
         event.preventDefault();
         event.stopPropagation();
-        console.log(date)
+        if (onClickBooking) {
+            onClickBooking(booking);
+        }
     }
 
     return (
