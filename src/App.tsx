@@ -6,6 +6,25 @@ import { Booking, CalendarConfig, Day } from './utils/Event';
 function App() {
   const bookings: Booking[] = [
     {
+      start: '2020-01-01',
+      end: '2020-01-03',
+      guest: {
+        name: 'Fora bolsonaro'
+      },
+      guests: 20,
+      id: 390,
+      property: {
+        id: 2,
+        minStay: 30
+      },
+      status: 'PENDING',
+      value: 3999,
+      changeover: {
+        before: 2,
+        after: 2
+      }
+    },
+    {
       start: '2020-01-25',
       end: '2020-01-31',
       guest: {

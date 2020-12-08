@@ -212,5 +212,9 @@ export const useStyles = makeStyles({
         cursor: 'unset',
         
       }
-  }
+  },
+
+  backgroundLightBlue: {
+    backgroundColor: '#36b7ec'
+  },
 });

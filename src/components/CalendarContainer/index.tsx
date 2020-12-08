@@ -124,6 +124,11 @@ function CalendarContainer(props: Props) {
         }
     }
 
+    function renderPriceWithCurrency(price?: number) {
+        const r = config.defaultPrice.currency === 'EUR' ? '€' : '$'
+        return `${price || config.defaultPrice.value} ${r}`
+    }
+
     function fillDaysInMonth(month: number) {
         const dateObject = moment().set('month', month).set('year', 2020);
 
@@ -147,7 +152,7 @@ function CalendarContainer(props: Props) {
                 key={dayFormated} id={dayFormated}
                 className={clsx(
                     classes.dayWrapper,
-                    day?.status === 'UNAVAILABLE' && classes.dayBlocked,
+                    ((day?.status === 'UNAVAILABLE' || config.defaultStatus === 'UNAVAILABLE') && bookingsThatDay.length === 0) && classes.dayBlocked,
                     dayIsSelected && classes.daySelected
                 )}
             >
@@ -174,7 +179,7 @@ function CalendarContainer(props: Props) {
                 </span>}
 
                 {(bookingsThatDay.length === 0) && <div className={classes.dayPrice}>
-                    {config.defaultPrice.value}
+                    {renderPriceWithCurrency(day?.price)}
                 </div>}
 
 
@@ -189,15 +194,16 @@ function CalendarContainer(props: Props) {
                         const isChangeoverDay = d <= booking.changeover.before;
 
                         return <>
-                            <ReactTooltip id="bookingPopup" effect="solid">
+                            <ReactTooltip id={`booking-${booking.id}`} effect="solid">
                                 {booking.guest.name}
                             </ReactTooltip>
 
                             <div
                                 data-tip
-                                data-for="bookingPopup"
+                                data-for={`booking-${booking.id}`}
                                 data-eventid={booking.id}
                                 className={clsx(
+                                    booking.status === 'PENDING' && classes.backgroundLightBlue,
                                     'event-timeline',
                                     classes.eventTimeline,
                                     booking.end === dayFormated && classes.eventEnd,
