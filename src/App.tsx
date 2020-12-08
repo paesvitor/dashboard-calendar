@@ -54,6 +54,14 @@ function App() {
       note: 'NOTE',
     },
     {
+      date: '2020-01-13',
+      status: 'INQUIRE',
+    },
+    {
+      date: '2020-01-14',
+      status: 'INQUIRE',
+    },
+    {
       date: '2020-01-23',
       price: 1000,
       note: 'NOTE',

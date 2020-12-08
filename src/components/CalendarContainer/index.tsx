@@ -114,6 +114,8 @@ function CalendarContainer(props: Props) {
                 return '#39dc39';
             case 'UPON_REQUEST':
                 return '#ffcc7b';
+            case 'UNAVAILABLE':
+                return '#ff6969'
         }
     }
 
