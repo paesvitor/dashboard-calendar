@@ -3,43 +3,44 @@ export type BookingStatus = 'CONFIRMED' | 'PENDING'
 
 export interface Booking {
     guest: {
-        name: string
+        name: string;
     },
 
     property: {
-        id: number,
-        minStay: number
+        id: number;
+        minStay: number;
     },
 
-    id: number,
-    status: BookingStatus,
-    start: string,
-    end: string,
-    guests: number,
-    value: number,
+    id: number;
+    status: BookingStatus;
+    start: string;
+    end: string;
+    guests: number;
+    value: number;
     changeover: {
         before: number,
-        after: number
+        after: number;
     }
 }
 
 export interface Day {
-    date: string,
-    price?: number,
-    note?: string,
-    status?: DayStatus
+    date: string;
+    price?: number;
+    note?: string;
+    status?: DayStatus;
+    restriction?: string;
 }
 
 export interface CalendarConfig {
     property: {
         name: string,
-        id: number
+        id: number;
     },
 
     defaultPrice: {
         value: number,
-        currency: 'EUR' | 'USD'
+        currency: 'EUR' | 'USD';
     }
 
-    defaultStatus: DayStatus
+    defaultStatus: DayStatus;
 }

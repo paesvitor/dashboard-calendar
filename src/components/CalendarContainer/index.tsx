@@ -46,6 +46,11 @@ function CalendarContainer(props: Props) {
     }
 
     function handleSelectDay(day: Moment) {
+        if (selectedRangeStart?.isSame(day)) {
+            setSelectedRangeStart(undefined);
+            setSelectedDays([]);
+        }
+
         if (selectedRangeStart?.isAfter(day) || !selectedRangeStart) {
             setSelectedRangeStart(day);
             setSelectedDays([day.format('YYYY-MM-DD')]);
@@ -101,8 +106,15 @@ function CalendarContainer(props: Props) {
         return arr;
     }
 
-    function renderDayStatus(status: DayStatus) {
-
+    function getDayStatusColor(status: DayStatus) {
+        switch (status) {
+            case 'INQUIRE':
+                return '#737373';
+            case 'INSTANT':
+                return '#39dc39';
+            case 'UPON_REQUEST':
+                return '#ffcc7b';
+        }
     }
 
     function fillDaysInMonth(month: number) {
@@ -132,15 +144,20 @@ function CalendarContainer(props: Props) {
                     dayIsSelected && classes.daySelected
                 )}
             >
-                <div className={classes.eventStatus} />
+                <div className={classes.dayStatus} style={{ backgroundColor: getDayStatusColor(day?.status || config.defaultStatus) }} />
 
                 <div className={classes.dayLabel}>
                     {d}
                 </div>
 
+                {day?.note && <div className={classes.dayNote} />}
+
+                {day?.restriction && <div className={classes.dayRestriction} />}
+
                 {(bookingsThatDay.length === 0) && <div className={classes.dayPrice}>
                     {config.defaultPrice.value}
                 </div>}
+
 
                 <div className={clsx(
                     classes.eventsWrapper,

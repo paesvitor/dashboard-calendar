@@ -71,7 +71,7 @@ export const useStyles = makeStyles({
     backgroundColor: '#f9f9f9',
     // position: 'relative',
 
-    background: 'linear-gradient(to top left, rgba(0,0,0,0) 0%, rgba(0,0,0,0) calc(50% - 3px), #e9e9e9 50%, rgba(0,0,0,0) calc(50% + 0.8px), rgba(0,0,0,0) 100%)'
+    background: 'linear-gradient(to top left, rgba(0,0,0,0) 0%, rgba(0,0,0,0) calc(50% - 2px), #e9e9e9 50%, rgba(0,0,0,0) calc(50% + 0.8px), rgba(0,0,0,0) 100%)'
   },
   
   dayLabel: {
@@ -79,6 +79,25 @@ export const useStyles = makeStyles({
     top: 9,
     left: 9,
     fontSize: 19
+  },
+
+  dayRestriction: {
+    position: 'absolute',
+    top: 14,
+    right: 14,
+    width: 15,
+    height: 15,
+    borderRadius: '50%',
+    backgroundColor: '#767676',
+    margin: '0 auto'
+  },
+
+  dayNote: {
+    width: 9,
+    height: 9,
+    borderRadius: '50%',
+    backgroundColor: '#b6b6b6',
+    margin: '0 auto'
   },
 
   dayPrice: {
@@ -177,12 +196,11 @@ export const useStyles = makeStyles({
     // backgroundColor: 'blue'
   },
 
-  eventStatus: {
+  dayStatus: {
     position: 'absolute',
     bottom: 0,
     width: '102%',
     height: 3,
-    backgroundColor: '#ff6969'
   },
 
 

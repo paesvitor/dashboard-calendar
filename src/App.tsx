@@ -51,12 +51,14 @@ function App() {
     {
       date: '2020-01-24',
       status: 'UNAVAILABLE',
+      note: 'NOTE',
     },
     {
       date: '2020-01-23',
       price: 1000,
       note: 'NOTE',
-      status: 'UPON_REQUEST'
+      status: 'UPON_REQUEST',
+      restriction: 'Restriction'
     }
   ]
 
